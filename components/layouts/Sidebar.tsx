@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 
 const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
-  { icon: Package, label: "Products", href: "/dashboard/products" },
+  { icon: Package, label: "Products", href: "/products" },
   { icon: ShoppingCart, label: "Orders", href: "/dashboard/orders" },
   { icon: Users, label: "Customers", href: "/dashboard/customers" },
 ];
