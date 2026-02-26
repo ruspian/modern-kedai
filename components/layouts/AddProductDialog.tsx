@@ -14,17 +14,29 @@ import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
 import { createProduct } from "@/actions/product";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export function AddProductDialog() {
   const [open, setOpen] = useState(false);
 
+  const router = useRouter();
+
   async function handleSubmit(formData: FormData) {
-    toast.promise(createProduct(formData), {
-      loading: "Menyimpan produk...",
-      success: (res) => res.message,
-      error: (err) => err.error,
-    });
-    setOpen(false);
+    const toastId = toast.loading("Menyimpan produk...");
+
+    try {
+      const result = await createProduct(formData);
+
+      if (!result.success) {
+        throw new Error(result.message);
+      }
+
+      toast.success(result.message, { id: toastId });
+      setOpen(false);
+      router.refresh();
+    } catch (error) {
+      toast.error((error as Error).message, { id: toastId });
+    }
   }
 
   return (
