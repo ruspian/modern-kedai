@@ -105,3 +105,52 @@ export async function deleteProduct(id: string) {
     return { message: "Terjadi kesalahan server!", success: false };
   }
 }
+
+export async function updateProduct(id: string, formData: FormData) {
+  // Validasi input
+  const validatedFields = ProductSchema.safeParse(Object.fromEntries(formData));
+
+  if (!validatedFields.success) {
+    return {
+      message: validatedFields.error.issues[0].message,
+      success: false,
+    };
+  }
+
+  const { name, price, costPrice, stock, categoryName } = validatedFields.data;
+
+  try {
+    // Cari atau bikin kategori baru
+    const category = await prisma.category.upsert({
+      where: { name: categoryName },
+      update: {},
+      create: { name: categoryName },
+    });
+
+    // Update
+    const updateProduct = await prisma.product.update({
+      where: { id },
+      data: {
+        name,
+        slug: name.toLowerCase().replace(/ /g, "-"),
+        price,
+        costPrice,
+        stock,
+        categoryId: category.id,
+      },
+      include: { category: true },
+    });
+
+    // refresh cache
+    revalidatePath("/products");
+
+    return {
+      success: true,
+      message: "Produk berhasil diupdate!",
+      data: updateProduct,
+    };
+  } catch (error) {
+    console.log("GAGAL UPDATE PRODUCT: ", error);
+    return { message: "Terjadi kesalahan server saat update!", success: false };
+  }
+}

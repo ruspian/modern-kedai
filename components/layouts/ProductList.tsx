@@ -2,18 +2,11 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useInView } from "react-intersection-observer";
-import { Package, MoreHorizontal } from "lucide-react";
+import { Package } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { DeleteButton } from "@/components/layouts/DeleteButton";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { getProducts } from "@/actions/product";
 import { ProductWithCategory } from "@/types/product";
+import { ProductAksi } from "./ProductAksi";
 
 export function ProductList({
   initialData,
@@ -59,7 +52,17 @@ export function ProductList({
     return () => {
       isMounted = false;
     };
-  }, [inView, cursor]); // Cukup pantau dua ini aja
+  }, [inView, cursor]);
+
+  const handleUpdateProduct = (updatedItem: ProductWithCategory) => {
+    setProducts((prev) =>
+      prev.map((item) => (item.id === updatedItem.id ? updatedItem : item)),
+    );
+  };
+
+  useEffect(() => {
+    setProducts(initialData);
+  }, [initialData]);
 
   return (
     <>
@@ -99,24 +102,13 @@ export function ProductList({
               </span>
             </td>
             <td className="px-6 py-4 text-right">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem asChild>
-                    <DeleteButton id={product.id} name={product.name} />
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <ProductAksi product={product} onUpdate={handleUpdateProduct} />
             </td>
           </tr>
         ))}
       </tbody>
 
-      {/* 3. Trigger Area yang lebih clean */}
+      {/* loading */}
       {cursor && (
         <tfoot className="w-full">
           <tr>
