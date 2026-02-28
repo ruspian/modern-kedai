@@ -16,8 +16,8 @@ import { cn } from "@/lib/utils";
 const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
   { icon: Package, label: "Products", href: "/products" },
-  { icon: ShoppingCart, label: "Orders", href: "/dashboard/orders" },
-  { icon: Users, label: "Customers", href: "/dashboard/customers" },
+  { icon: ShoppingCart, label: "Orders", href: "/orders" },
+  { icon: Users, label: "Customers", href: "/customers" },
 ];
 
 export function SidebarContent({ isMobile = false }: { isMobile?: boolean }) {
