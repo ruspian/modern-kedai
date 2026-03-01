@@ -15,6 +15,7 @@ import { Input } from "../ui/input";
 export function PosTerminal({ products }: { products: ProductWithCategory[] }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [customerName, setCustomerName] = useState("");
   const router = useRouter();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -95,7 +96,12 @@ export function PosTerminal({ products }: { products: ProductWithCategory[] }) {
     const toastId = toast.loading("Memproses pembayaran...");
 
     try {
-      const result = await processCheckout(cart, totalAmount, "CASH");
+      const result = await processCheckout(
+        cart,
+        totalAmount,
+        "CASH",
+        customerName,
+      );
 
       if (!result.success) {
         throw new Error(result.message);
@@ -103,6 +109,7 @@ export function PosTerminal({ products }: { products: ProductWithCategory[] }) {
 
       toast.success(result.message, { id: toastId });
       setCart([]);
+      setCustomerName("");
       router.refresh();
     } catch (error) {
       toast.error((error as Error).message, { id: toastId });
@@ -252,6 +259,18 @@ export function PosTerminal({ products }: { products: ProductWithCategory[] }) {
         </div>
 
         <div className="p-4 border-t bg-slate-50 space-y-4 z-10">
+          <div className="space-y-1.5 mb-2">
+            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              Nama Pelanggan (Opsional)
+            </label>
+            <Input
+              placeholder="Otong Surotong "
+              value={customerName}
+              onChange={(e) => setCustomerName(e.target.value)}
+              className="bg-white"
+            />
+          </div>
+
           <div className="flex justify-between items-end">
             <span className="font-semibold text-slate-500 text-sm">
               Total Tagihan
