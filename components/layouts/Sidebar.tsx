@@ -1,4 +1,3 @@
-// components/layout/Sidebar.tsx
 "use client";
 
 import {
@@ -14,7 +13,7 @@ import { SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 
 const menuItems = [
-  { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
+  { icon: LayoutDashboard, label: "Dashboard", href: "/" },
   { icon: Package, label: "Products", href: "/products" },
   { icon: ShoppingCart, label: "Orders", href: "/orders" },
   { icon: Users, label: "Customers", href: "/customers" },
@@ -36,7 +35,6 @@ export function SidebarContent({ isMobile = false }: { isMobile?: boolean }) {
       <div className="h-16 flex items-center px-6 border-b md:border-none">
         {isMobile ? (
           <SheetHeader className="text-left">
-            {/* SheetTitle WAJIB ada di dalam Sheet untuk Aksesibilitas */}
             <SheetTitle asChild>{Logo}</SheetTitle>
           </SheetHeader>
         ) : (
