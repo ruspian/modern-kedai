@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🏪 ModernKedai POS (Point of Sale)
 
-## Getting Started
+Aplikasi kasir (Point of Sale) modern berbasis web. Dibangun menggunakan ekosistem Next.js terbaru untuk memberikan performa super cepat, manajemen state yang reaktif, dan keamanan data tingkat tinggi.
 
-First, run the development server:
+## 🚀 Fitur Utama
+
+- **🛒 Terminal Kasir (POS) Interaktif:** Pencarian produk _real-time_, manajemen keranjang belanja, dan pemotongan stok otomatis menggunakan Prisma Transactions.
+- **📊 Dashboard Analitik:** Pantau pendapatan, jumlah transaksi, dan peringatan stok menipis secara _real-time_.
+- **📦 Manajemen Inventaris:** CRUD produk lengkap dengan kategori, harga modal, dan harga jual untuk perhitungan profit yang akurat.
+- **👥 Pelacakan Pelanggan:** Pencatatan otomatis riwayat belanja pelanggan dan total transaksinya.
+- **🔐 Role-Based Access Control (RBAC):** Pemisahan akses aman antara **ADMIN** (Pemilik) dan **STAFF** (Kasir) menggunakan Middleware di Edge Runtime.
+- **📜 Riwayat Transaksi:** Catatan detail setiap nota, nama kasir yang bertugas, dan metode pembayaran (Cash/QRIS/Transfer).
+
+## 🛠️ Tech Stack
+
+- **Framework:** [Next.js 14/15](https://nextjs.org/)
+- **Authentication:** [Auth.js / NextAuth v5](https://authjs.dev/)
+- **Database ORM:** [Prisma](https://www.prisma.io/)
+- **Database:** PostgreSQL
+- **Styling:** Tailwind CSS
+- **UI Components:** [shadcn/ui](https://ui.shadcn.com/) & Lucide Icons
+
+## ⚙️ Cara Instalasi & Menjalankan Lokal
+
+Ikuti langkah-langkah di bawah ini untuk menjalankan aplikasi di komputermu:
+
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/ruspianm/modernkedai-pos.git
+cd modernkedai-pos
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Setup Environment Variables
+
+Buat file `.env` di _root folder_ dan masukkan konfigurasi database serta _secret key_ untuk autentikasi:
+
+```env
+# URL Koneksi PostgreSQL kamu
+DATABASE_URL="postgresql://user:password@localhost:5432/modernkedai_db?schema=public"
+
+# Generate secret key dengan perintah: npx auth secret
+AUTH_SECRET="rahasia_negara_123_ganti_dengan_yang_aman"
+```
+
+### 4. Setup Database (Prisma)
+
+Jalankan perintah ini untuk melakukan sinkronisasi skema database:
+
+```bash
+npx prisma db push
+```
+
+_(Opsional)_ Buka Prisma Studio untuk menambahkan data User awal (Admin/Staff) secara manual:
+
+```bash
+npx prisma studio
+```
+
+### 5. Jalankan Aplikasi
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Buka [http://localhost:3000](http://localhost:3000) di browsermu.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🧪 Akun Testing (Contoh)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Jika kamu sudah membuat akun di database, gunakan kredensial berikut untuk menguji _Role-Based Access Control_:
 
-## Learn More
+- **Admin Account:** `admin@modernkedai.com` | Akses penuh ke seluruh fitur (Dashboard & Produk).
+- **Staff Account:** `kasir@modernkedai.com` | Hanya akses ke halaman POS, Riwayat, dan Pelanggan.
 
-To learn more about Next.js, take a look at the following resources:
+## 👨‍💻 Author
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Dibuat dengan ☕ dan ❤️ oleh **Ruspian Majid**.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- GitHub: [@ruspianm](https://github.com/ruspianm)
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+_Project ini terbuka untuk masukan dan pengembangan lebih lanjut. Silakan buat issue atau pull request!_
