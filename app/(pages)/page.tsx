@@ -9,11 +9,18 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  // 🔥 Narik semua data berbarengan (Concurrent Fetching) biar super ngebut
+  const session = await auth();
+
+  if (!session?.user || session.user.role !== "ADMIN") {
+    redirect("/orders");
+  }
+
   const [
     revenueResult,
     totalOrders,
@@ -21,29 +28,24 @@ export default async function DashboardPage() {
     lowStockProducts,
     recentOrders,
   ] = await Promise.all([
-    // 1. Total Pendapatan
     prisma.order.aggregate({
       _sum: { totalAmount: true },
     }),
-    // 2. Total Transaksi
     prisma.order.count(),
-    // 3. Pelanggan Unik
     prisma.order.groupBy({
       by: ["customerName"],
       where: { customerName: { not: null } },
     }),
-    // 4. Produk Stok Menipis (Stok <= 5)
     prisma.product.findMany({
       where: { stock: { lte: 5 } },
       take: 5,
       orderBy: { stock: "asc" },
     }),
-    // 5. 5 Transaksi Terakhir
     prisma.order.findMany({
       take: 5,
       orderBy: { createdAt: "desc" },
       include: {
-        user: { select: { name: true } }, // Tarik nama kasirnya aja
+        user: { select: { name: true } },
       },
     }),
   ]);
@@ -62,9 +64,7 @@ export default async function DashboardPage() {
         </p>
       </div>
 
-      {/* --- 4 KOTAK METRIK UTAMA --- */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {/* 1. Pendapatan */}
         <Card className="shadow-sm border-0 bg-white">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-slate-500">
@@ -81,7 +81,6 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
 
-        {/* 2. Transaksi */}
         <Card className="shadow-sm border-0 bg-white">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-slate-500">
@@ -98,7 +97,6 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
 
-        {/* 3. Pelanggan */}
         <Card className="shadow-sm border-0 bg-white">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-slate-500">
@@ -115,7 +113,6 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
 
-        {/* 4. Stok Peringatan */}
         <Card className="shadow-sm border-0 bg-white">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-slate-500">
@@ -133,9 +130,7 @@ export default async function DashboardPage() {
         </Card>
       </div>
 
-      {/* --- BAGIAN BAWAH (GRAFIK/TABEL) --- */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        {/* KIRI: Transaksi Terakhir (Lebar 4 kolom) */}
         <Card className="shadow-sm border-0 bg-white lg:col-span-4">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
@@ -179,7 +174,6 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
 
-        {/* KANAN: Peringatan Stok (Lebar 3 kolom) */}
         <Card className="shadow-sm border-0 bg-white lg:col-span-3">
           <CardHeader>
             <CardTitle className="text-lg">Butuh Restock Segera</CardTitle>

@@ -11,16 +11,20 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import { useSession } from "next-auth/react";
 
 const menuItems = [
-  { icon: LayoutDashboard, label: "Dashboard", href: "/" },
-  { icon: Package, label: "Products", href: "/products" },
-  { icon: ShoppingCart, label: "Orders", href: "/orders" },
-  { icon: Users, label: "Customers", href: "/customers" },
+  { icon: LayoutDashboard, label: "Dashboard", href: "/", adminOnly: true },
+  { icon: Package, label: "Products", href: "/products", adminOnly: false },
+  { icon: ShoppingCart, label: "Orders", href: "/orders", adminOnly: false },
+  { icon: Users, label: "Customers", href: "/customers", adminOnly: false },
 ];
 
 export function SidebarContent({ isMobile = false }: { isMobile?: boolean }) {
   const pathname = usePathname();
+
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.role === "ADMIN";
 
   const Logo = (
     <div className="flex items-center">
@@ -44,6 +48,8 @@ export function SidebarContent({ isMobile = false }: { isMobile?: boolean }) {
 
       <nav className="flex-1 space-y-1 px-3 py-4">
         {menuItems.map((item) => {
+          if (item.adminOnly && !isAdmin) return null;
+
           const isActive =
             item.href === "/dashboard"
               ? pathname === "/dashboard"
